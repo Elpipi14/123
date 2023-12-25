@@ -70,7 +70,8 @@ router.get('/profile', validateLogin, async (req, res) => {
             age: user.age,
             role: user.role,
             gender: user.gender,
-            image: user.image
+            image: user.image,
+            isGithub: user.isGithub
         };
 
         console.log("rol ADMIN: ", isAdmin);

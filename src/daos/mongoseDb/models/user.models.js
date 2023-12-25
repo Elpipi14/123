@@ -33,7 +33,7 @@ const userSchema = new Schema({
   cartId:{
     type: String
   },
-  IsGithub: {
+  isGithub: {
     type: Boolean,
     default: false,
   },

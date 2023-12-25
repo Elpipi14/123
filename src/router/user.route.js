@@ -15,9 +15,9 @@ routerUser.post('/login', loginRoute, (req, res, next) => {
 
 routerUser.get("/logout", userControllers.logout);
 
-routerUser.get('/register-gitHub', passport.authenticate("github", { scope: ["user:email"] }));
+routerUser.get("/sessions/current", userControllers.sessionCurrent);
 
-routerUser.get("/logout", userControllers.logout);
+routerUser.get('/register-gitHub', passport.authenticate("github", { scope: ["user:email"] }));
 
 routerUser.get('/gitHub', passport.authenticate('github', {
     failureRedirect: '/login',

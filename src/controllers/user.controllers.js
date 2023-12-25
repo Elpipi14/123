@@ -6,7 +6,7 @@ export const register = async (req, res, next) => {
     const isRegistered = await userService.register({ ...req.body, email, password });
 
     if (!isRegistered) {
-      console.log("Usuario registrado correctamente. Redirigiendo a /login");
+      console.log("Usuario registrado correctamente. Redirigiendo a /profile");
       res.redirect("/profile");
     } else {
       console.log("Error en el registro. Redirigiendo a /register-error");
@@ -25,23 +25,45 @@ export const login = async (req, res, next) => {
 
     if (user) {
       req.session.welcomeMessage = `Bienvenido, ${user.first_name} ${user.last_name}!`;
-
       req.session.isAdmin = user.role === 'admin';
-
       req.session.user = user;
+
       req.session.save((err) => {
         if (err) {
           console.error('Error al guardar la sesión:', err);
+          res.status(500).json({ error: 'Error al guardar la sesión' });
         } else {
           res.redirect("/products");
         }
       });
-
     } else {
-      res.redirect("/login-error");
+      res.status(401).json({ error: 'Credenciales incorrectas' });
     }
   } catch (error) {
     next(error);
+  }
+};
+
+export const sessionCurrent = (req, res) => {
+  try {
+    // Verifica si el usuario está autenticado
+    if (req.isAuthenticated()) {
+      // Obtiene la información del usuario actual desde la sesión
+      const { first_name, last_name, email, role } = req.user;
+
+      // Devuelve la información del usuario actual en la respuesta
+      res.status(200).json({
+        message: "Usuario autenticado",
+        user: { first_name, last_name, email, role },
+      });
+    } else {
+      // Si el usuario no está autenticado, devuelve un mensaje de error
+      res.status(401).json({ error: "Usuario no autenticado" });
+    }
+  } catch (error) {
+    // Manejo de errores
+    console.error("Error al obtener la sesión actual:", error);
+    res.status(500).json({ error: "Error al obtener la sesión actual" });
   }
 };
 
